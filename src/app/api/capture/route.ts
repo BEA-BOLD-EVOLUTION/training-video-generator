@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         console.log(`Starting screenshot capture for ${url} (Headless: ${headless})`)
 
         const browser = await puppeteer.launch({
-            headless: headless ? 'new' : false, // Use 'new' for new headless mode, or false for visible
+            headless: headless, // New headless mode is the default in puppeteer 22+; false keeps it visible
             defaultViewport: null, // Allow viewport to resize with window
             userDataDir: './.puppeteer_data', // Persist session data (cookies, localStorage)
             args: [
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
                 }, loginWaitTime);
             }
 
-            await page.waitForTimeout(loginWaitTime)
+            await new Promise((resolve) => setTimeout(resolve, loginWaitTime))
 
             // Remove the overlay before capturing anything
             if (!headless) {
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
                 }
 
                 // Wait for the specified time
-                await page.waitForTimeout(step.waitTime || 1000)
+                await new Promise((resolve) => setTimeout(resolve, step.waitTime || 1000))
 
                 // Take screenshot
                 const screenshot = await page.screenshot({

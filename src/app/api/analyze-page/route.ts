@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         });
 
         // Small delay for UI to clear
-        await page.waitForTimeout(500);
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         // Get final URL (user might have navigated)
         const finalUrl = page.url();
