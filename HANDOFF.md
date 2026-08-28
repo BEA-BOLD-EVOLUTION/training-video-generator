@@ -71,6 +71,27 @@ Reduces video creation from hours to minutes by automating browser interaction, 
 - **Cost:** $0 to run (uses free Gemini tier)
 - **Quality:** Professional, consistent videos every time
 
+### Role in the BEA product family
+
+This app is the **screen-recording arm** of the BEA training pipeline — it
+captures real walkthrough footage (e.g. of the Toklytics-LiveIQ portal) that
+the slide-based BEA-Training-Engine cannot produce itself. The handoff is
+file-based; nothing in this repo calls the other repos:
+
+1. Record/stitch a walkthrough here → `public/exports/videos/tutorial-*.mp4`
+   (plus `project_data.json`, which describes what each step shows).
+2. In **BEA-Training-Engine**, stage it as vetted local b-roll:
+   `python src/spike_orchestrator.py import-tvg --video <mp4> --project-data <project_data.json>`
+   — keywords are derived from the step titles so `BRollPlayer` can match the
+   clip against a deck's `broll_query` (local-first, before Pexels).
+3. The engine's rendered modules then flow to YouTube (unlisted) and on into
+   the **Toklytics-LiveIQ** Training Library via
+   `/api/training/engine-publish` (see the engine's README).
+
+A full TVG recording can also be published directly as its own training video
+by uploading it through the engine's review gate + publisher rather than
+around it, so every creator-facing video passes the same editorial approval.
+
 ---
 
 ## 🏗️ Technical Architecture
